@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TRMDesktopUI.Helpers;
 
@@ -9,7 +6,7 @@ namespace TRMDesktopUI.ViewModels
 {
     public class LoginViewModel : Caliburn.Micro.Screen
     {
-        private string _userName, _password;
+        private string _userName, _password, _errorMessage;
         private IAPIHelper _apiHelper;
 
         public LoginViewModel(IAPIHelper apiHelper)
@@ -39,6 +36,22 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
+        public bool IsErrorVisible
+        {
+            get { return ErrorMessage?.Length > 0; }
+        }
+
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                NotifyOfPropertyChange(() => ErrorMessage);
+                NotifyOfPropertyChange(() => IsErrorVisible);
+            }
+        }
+
         public bool CanLogIn
         {
             get
@@ -56,10 +69,12 @@ namespace TRMDesktopUI.ViewModels
         {
             try
             {
+                ErrorMessage = string.Empty;
                 var result = await _apiHelper.Authenticate(UserName, Password);
             }
             catch (Exception ex)
             {
+                ErrorMessage = ex.Message;
             }
         }
     }
