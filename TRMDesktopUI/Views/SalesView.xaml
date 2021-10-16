@@ -30,7 +30,6 @@
         <TextBlock Grid.Column="0" Grid.Row="0"
                    Grid.ColumnSpan="3"
                    Text="Venda" FontSize="48"
-                   TextAlignment="Center"
                    Margin="0 0 0 20" />
 
         <!-- Coluna 0 -->
