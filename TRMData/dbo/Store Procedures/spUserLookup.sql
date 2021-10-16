@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[spUserLookup]
-	@Id nvarchar(128)
+	@Id NVARCHAR(128)
 AS
 BEGIN
 	SET NOCOUNT ON;
