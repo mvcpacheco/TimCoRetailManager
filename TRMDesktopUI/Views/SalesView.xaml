@@ -35,7 +35,8 @@
         <!-- Coluna 0 -->
         <TextBlock Text="Itens" Grid.Column="0" Grid.Row="1" />
         <ListBox x:Name="Products" Grid.Column="0" Grid.Row="2"
-                  MinHeight="200" MinWidth="150">
+                  MinHeight="200" MinWidth="150"
+                 SelectedItem="{Binding SelectedProduct}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding ProductName}" />
@@ -58,7 +59,13 @@
         <!-- Coluna 2 -->
         <TextBlock Text="Carrinho" Grid.Column="2" Grid.Row="1" />
         <ListBox x:Name="Cart" Grid.Column="2" Grid.Row="2"
-                 MinHeight="200" MinWidth="150" />
+                 MinHeight="200" MinWidth="150">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding DisplayText}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <DockPanel Grid.Column="2" Grid.Row="3">
             <TextBlock Text="Subtotal: " Margin="0 0 15 0" />

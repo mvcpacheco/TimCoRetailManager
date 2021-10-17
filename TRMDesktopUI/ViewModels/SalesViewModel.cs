@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using TRMDesktopUI.Library.API;
 using TRMDesktopUI.Library.Models;
@@ -9,8 +10,9 @@ namespace TRMDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
         private BindingList<ProductModel> _products;
-        private BindingList<string> _cart;
-        private int _itemQuantity;
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        private int _itemQuantity = 1;
+        private ProductModel _selectedProduct;
         private IProductEndpoint _productEndpoint;
 
         public SalesViewModel(IProductEndpoint productEndpoint)
@@ -40,6 +42,17 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
+        public ProductModel SelectedProduct
+        {
+            get { return _selectedProduct; }
+            set
+            {
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
         public int ItemQuantity
         {
             get { return _itemQuantity; }
@@ -47,10 +60,11 @@ namespace TRMDesktopUI.ViewModels
             {
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
 
-        public BindingList<string> Cart
+        public BindingList<CartItemModel> Cart
         {
             get { return _cart; }
             set
@@ -62,7 +76,14 @@ namespace TRMDesktopUI.ViewModels
 
         public string SubTotal
         {
-            get { return "R$ 0,00"; }
+            get
+            {
+                //var output = "R$ 0,00";
+
+                var subTotal = Cart.Sum(item => item.Product.RetailPrice * item.QuantityInCart);
+
+                return subTotal.ToString("C");
+            }
         }
 
         public string Tax
@@ -79,21 +100,46 @@ namespace TRMDesktopUI.ViewModels
         {
             get
             {
-                bool output = false;
-                // Check
+                var output = false;
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    output = true;
+                }
                 return output;
             }
         }
 
         public void AddToCart()
         {
+            var existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+
+            if (existingItem != null)
+            {
+                existingItem.QuantityInCart += ItemQuantity;
+                Cart.ResetBindings();
+            }
+            else
+            {
+                var item = new CartItemModel
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+
+                Cart.Add(item);
+            }
+
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Cart);
         }
 
         public bool CanRemoveFromCart
         {
             get
             {
-                bool output = false;
+                var output = false;
                 // Check
                 return output;
             }
@@ -107,7 +153,7 @@ namespace TRMDesktopUI.ViewModels
         {
             get
             {
-                bool output = false;
+                var output = false;
                 // Check
                 return output;
             }

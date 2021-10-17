@@ -60,7 +60,7 @@ namespace TRMDesktopUI.ViewModels
         {
             get
             {
-                bool output = false;
+                var output = false;
                 if (UserName?.Length > 0 && Password?.Length > 0)
                 {
                     output = true;
