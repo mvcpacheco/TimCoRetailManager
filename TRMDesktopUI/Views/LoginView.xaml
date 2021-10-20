@@ -40,7 +40,7 @@
         <TextBlock Grid.Row="3" Grid.Column="1" Margin="0 0 20 10">
             Senha:
         </TextBlock>
-        <PasswordBox x:Name="Password" Grid.Row="3" Grid.Column="2" MinWidth="350" Margin="0 0 0 10" />
+        <PasswordBox x:Name="Password" Grid.Row="3" Grid.Column="2" MinWidth="350" Margin="0 0 0 50" />
 
         <Button x:Name="LogIn" Grid.Row="4" Grid.Column="1" Margin="50 0 0 0"
                 Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="20 5">

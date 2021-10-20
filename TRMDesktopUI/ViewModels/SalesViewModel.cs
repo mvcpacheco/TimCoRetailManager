@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TRMDesktopUI.Library.API;
+using TRMDesktopUI.Library.Helpers;
 using TRMDesktopUI.Library.Models;
 
 namespace TRMDesktopUI.ViewModels
@@ -14,10 +15,12 @@ namespace TRMDesktopUI.ViewModels
         private int _itemQuantity = 1;
         private ProductModel _selectedProduct;
         private IProductEndpoint _productEndpoint;
+        private IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndpoint productEndpoint)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
         {
             _productEndpoint = productEndpoint;
+            _configHelper = configHelper;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -78,22 +81,40 @@ namespace TRMDesktopUI.ViewModels
         {
             get
             {
-                //var output = "R$ 0,00";
-
-                var subTotal = Cart.Sum(item => item.Product.RetailPrice * item.QuantityInCart);
-
-                return subTotal.ToString("C");
+                return CalculateSubTotal().ToString("C");
             }
+        }
+
+        private decimal CalculateSubTotal()
+        {
+            return Cart.Sum(item => item.Product.RetailPrice * item.QuantityInCart);
         }
 
         public string Tax
         {
-            get { return "R$ 0,00"; }
+            get
+            {
+                return CalculateTax().ToString("C");
+            }
+        }
+
+        private decimal CalculateTax()
+        {
+            return Cart.Sum(item => item.Product.RetailPrice * item.QuantityInCart *
+                            (item.Product.IsTaxable ? item.Product.TaxRate / 100 : 0));
+
+            // O curso do YouTube utilizava uma propriedade na aplicação para uma porcentagem fixa de imposto.
+            // Alterei para um valor por produto
+            //var taxRate = _configHelper.GetTaxRate();
+            //var taxAmount = Cart.Sum(item => item.Product.RetailPrice * item.QuantityInCart * item.Product.TaxRate);
         }
 
         public string Total
         {
-            get { return "R$ 0,00"; }
+            get
+            {
+                return (CalculateSubTotal() + CalculateTax()).ToString("C");
+            }
         }
 
         public bool CanAddToCart
@@ -132,6 +153,8 @@ namespace TRMDesktopUI.ViewModels
             SelectedProduct.QuantityInStock -= ItemQuantity;
             ItemQuantity = 1;
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => Cart);
         }
 
@@ -147,6 +170,9 @@ namespace TRMDesktopUI.ViewModels
 
         public void RemoveFromCart()
         {
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanCheckOut
