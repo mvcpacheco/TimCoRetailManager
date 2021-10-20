@@ -1,7 +1,7 @@
-﻿using Caliburn.Micro;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Caliburn.Micro;
 using TRMDesktopUI.Library.API;
 using TRMDesktopUI.Library.Helpers;
 using TRMDesktopUI.Library.Models;
@@ -87,7 +87,7 @@ namespace TRMDesktopUI.ViewModels
 
         private decimal CalculateSubTotal()
         {
-            return Cart.Sum(item => item.Product.RetailPrice * item.QuantityInCart);
+            return Cart.Sum(x => x.Product.RetailPrice * x.QuantityInCart);
         }
 
         public string Tax
@@ -100,8 +100,11 @@ namespace TRMDesktopUI.ViewModels
 
         private decimal CalculateTax()
         {
-            return Cart.Sum(item => item.Product.RetailPrice * item.QuantityInCart *
-                            (item.Product.IsTaxable ? item.Product.TaxRate / 100 : 0));
+            return Cart.Where(x => x.Product.IsTaxable)
+                .Sum(x => x.Product.RetailPrice * x.QuantityInCart * (x.Product.TaxRate / 100));
+
+            //return Cart.Sum(item => item.Product.RetailPrice * item.QuantityInCart *
+            //                (item.Product.IsTaxable ? item.Product.TaxRate / 100 : 0));
 
             // O curso do YouTube utilizava uma propriedade na aplicação para uma porcentagem fixa de imposto.
             // Alterei para um valor por produto

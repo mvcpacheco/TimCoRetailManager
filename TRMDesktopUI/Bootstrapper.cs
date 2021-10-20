@@ -1,9 +1,11 @@
-﻿using Caliburn.Micro;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
+using Caliburn.Micro;
 using TRMDesktopUI.Helpers;
 using TRMDesktopUI.Library.API;
 using TRMDesktopUI.Library.Helpers;
@@ -46,6 +48,7 @@ namespace TRMDesktopUI
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.Name)));
             DisplayRootViewFor<ShellViewModel>();
         }
 
