@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[spSale_Insert]
-	@Id INT output,
+	@Id INT OUTPUT,
     @CashierId NVARCHAR(128),
     @SaleDate DATETIME2,
     @SubTotal MONEY,
@@ -9,9 +9,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-
     INSERT INTO dbo.Sale(CashierId, SaleDate, SubTotal, Tax, Total)
-        OUTPUT INSERTED.Id
         VALUES (@CashierId, @SaleDate, @SubTotal, @Tax, @Total);
+
+    SET @Id = SCOPE_IDENTITY()
 
 END
