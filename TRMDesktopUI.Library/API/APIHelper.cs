@@ -60,7 +60,7 @@ namespace TRMDesktopUI.Library.API
             }
         }
 
-        private void LogOffUser()
+        public void LogOffUser()
         {
             _apiClient.DefaultRequestHeaders.Clear();
         }

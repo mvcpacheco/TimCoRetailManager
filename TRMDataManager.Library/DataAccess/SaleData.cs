@@ -48,13 +48,25 @@ namespace TRMDataManager.Library.DataAccess
 
                 sale.Total = sale.SubTotal + sale.Tax;
 
-                var sql = new SqlDataAccess();
-                sale.Id = sql.SaveData("dbo.spSale_Insert", sale, "TRMData", "Id", System.Data.DbType.Int32);
-
-                foreach (var item in detais)
+                using (var sql = new SqlDataAccess())
                 {
-                    item.SaleId = sale.Id;
-                    sql.SaveData("dbo.spSaleDetail_Insert", item, "TRMData");
+                    try
+                    {
+                        sql.BeginTransaction("TRMData");
+
+                        sale.Id = sql.SaveDataInTransaction("dbo.spSale_Insert", sale, "Id", System.Data.DbType.Int32);
+
+                        foreach (var item in detais)
+                        {
+                            item.SaleId = sale.Id;
+                            sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
+                        }
+                    }
+                    catch
+                    {
+                        sql.RollbackTransaction();
+                        throw;
+                    }
                 }
             }
         }

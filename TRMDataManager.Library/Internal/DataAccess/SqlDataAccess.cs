@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,8 +8,10 @@ using Dapper;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
-    internal class SqlDataAccess
+    internal class SqlDataAccess : IDisposable
     {
+        private IDbConnection _connection;
+        private IDbTransaction _transaction;
         public string GetConnectionString(string name)
         {
             return ConfigurationManager.ConnectionStrings[name].ConnectionString;
@@ -36,9 +39,9 @@ namespace TRMDataManager.Library.Internal.DataAccess
             }
         }
 
-        public dynamic SaveData<T>(string storedProcedure, T parameters, string ConnectionStringName, string outputPareter, DbType dbType)
+        public dynamic SaveData<T>(string storedProcedure, T parameters, string connectionStringName, string outputPareter, DbType dbType)
         {
-            var connectionString = GetConnectionString(ConnectionStringName);
+            var connectionString = GetConnectionString(connectionStringName);
 
             var p = new DynamicParameters(parameters);
             p.Add(outputPareter, dbType: dbType, direction: ParameterDirection.Output);
@@ -49,6 +52,46 @@ namespace TRMDataManager.Library.Internal.DataAccess
             }
 
             return p.Get<dynamic>(outputPareter);
+        }
+
+        public void BeginTransaction(string connectionStringName)
+        {
+            var connectionString = GetConnectionString(connectionStringName);
+            _connection = new SqlConnection(connectionString);
+            _connection.Open();
+            _transaction = _connection.BeginTransaction();
+        }
+
+        public void SaveDataInTransaction<T>(string storedProcedure, T parameters)
+        {
+            _connection.Execute(storedProcedure, parameters, commandType: CommandType.StoredProcedure, transaction: _transaction);
+        }
+
+        public dynamic SaveDataInTransaction<T>(string storedProcedure, T parameters, string outputPareter, DbType dbType)
+        {
+            var p = new DynamicParameters(parameters);
+            p.Add(outputPareter, dbType: dbType, direction: ParameterDirection.Output);
+
+            _connection.Execute(storedProcedure, p, commandType: CommandType.StoredProcedure, transaction: _transaction);
+
+            return p.Get<dynamic>(outputPareter);
+        }
+
+        public void CommitTransaction()
+        {
+            _transaction?.Commit();
+            _connection.Close();
+        }
+
+        public void RollbackTransaction()
+        {
+            _transaction?.Rollback();
+            _connection.Close();
+        }
+
+        public void Dispose()
+        {
+            CommitTransaction();
         }
     }
 }
