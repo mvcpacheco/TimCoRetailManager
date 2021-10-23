@@ -16,6 +16,7 @@ namespace TRMDesktopUI.ViewModels
         private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
         private int _itemQuantity = 1;
         private ProductDisplayModel _selectedProduct;
+        private CartItemDisplayModel _selectedCartItem;
         private IProductEndpoint _productEndpoint;
         private ISaleEndpoint _saleEndpoint;
         private IMapper _mapper;
@@ -60,6 +61,17 @@ namespace TRMDesktopUI.ViewModels
                 _selectedProduct = value;
                 NotifyOfPropertyChange(() => SelectedProduct);
                 NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+        public CartItemDisplayModel SelectedCartItem
+        {
+            get { return _selectedCartItem; }
+            set
+            {
+                _selectedCartItem = value;
+                NotifyOfPropertyChange(() => SelectedCartItem);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
             }
         }
 
@@ -147,7 +159,6 @@ namespace TRMDesktopUI.ViewModels
             if (existingItem != null)
             {
                 existingItem.QuantityInCart += ItemQuantity;
-                //Cart.ResetBindings();
             }
             else
             {
@@ -174,13 +185,28 @@ namespace TRMDesktopUI.ViewModels
             get
             {
                 var output = false;
-                // Check
+                if (SelectedCartItem != null && SelectedCartItem.Product.QuantityInStock > 0)
+                {
+                    output = true;
+                }
                 return output;
             }
         }
 
         public void RemoveFromCart()
         {
+
+            SelectedCartItem.Product.QuantityInStock++;
+
+            if (SelectedCartItem.QuantityInCart > 1)
+            {
+                SelectedCartItem.QuantityInCart--;
+            }
+            else
+            {
+                Cart.Remove(SelectedCartItem);
+            }
+
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
