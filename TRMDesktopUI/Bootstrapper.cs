@@ -29,7 +29,8 @@ namespace TRMDesktopUI
         protected override void Configure()
         {
             _container.Instance(_container)
-                .PerRequest<IProductEndpoint, ProductEndpoint>();
+                .PerRequest<IProductEndpoint, ProductEndpoint>()
+                .PerRequest<ISaleEndpoint, SaleEndpoint>(); ;
 
             _container
                 .Singleton<IWindowManager, WindowManager>()
@@ -48,7 +49,8 @@ namespace TRMDesktopUI
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.Name)));
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.Name)));
             DisplayRootViewFor<ShellViewModel>();
         }
 

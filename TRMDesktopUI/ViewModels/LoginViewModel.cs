@@ -1,12 +1,12 @@
-﻿using Caliburn.Micro;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Caliburn.Micro;
 using TRMDesktopUI.EventModels;
 using TRMDesktopUI.Library.API;
 
 namespace TRMDesktopUI.ViewModels
 {
-    public class LoginViewModel : Caliburn.Micro.Screen
+    public class LoginViewModel : Screen
     {
         private string _userName, _password, _errorMessage;
         private IAPIHelper _apiHelper;
@@ -16,6 +16,10 @@ namespace TRMDesktopUI.ViewModels
         {
             _apiHelper = apiHelper;
             _events = events;
+#if (DEBUG)
+            _userName = "marcus.pacheco@gmail.com";
+            _password = "Pwd12345.";
+#endif
         }
 
         public string UserName
