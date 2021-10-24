@@ -76,6 +76,9 @@
     <Build Include="dbo\Store Procedures\spProduct_GetById.sql" />
     <Build Include="dbo\Store Procedures\spSale_Insert.sql" />
     <Build Include="dbo\Store Procedures\spSaleDetail_Insert.sql" />
+    <Build Include="dbo\Store Procedures\spInventory_GetAll.sql" />
+    <Build Include="dbo\Store Procedures\spInventory_Insert.sql" />
+    <Build Include="dbo\Store Procedures\spSale_SaleReport.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="TRMData.refactorlog" />
