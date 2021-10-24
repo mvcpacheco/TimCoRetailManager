@@ -9,6 +9,13 @@ namespace TRMDataManager.Controllers
     [Authorize]
     public class SaleController : ApiController
     {
+        [Route("GetSalesReport")]
+        public List<SaleReportModel> GetSalesReport()
+        {
+            var data = new SaleData();
+            return data.GetSaleReport();
+        }
+        
         [HttpPost]
         public void Post(SaleModel sale)
         {
