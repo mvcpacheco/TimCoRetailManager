@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper;
+using Caliburn.Micro;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Caliburn.Micro;
+using System.Windows;
 using TRMDesktopUI.Library.API;
 using TRMDesktopUI.Library.Models;
 using TRMDesktopUI.Models;
@@ -20,20 +22,41 @@ namespace TRMDesktopUI.ViewModels
         private IProductEndpoint _productEndpoint;
         private ISaleEndpoint _saleEndpoint;
         private IMapper _mapper;
+        private StatusInfoViewModel _status;
+        private IWindowManager _windowManager;
+
         //private IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, ISaleEndpoint saleEndpoint, IMapper mapper)
+        public SalesViewModel(IProductEndpoint productEndpoint, ISaleEndpoint saleEndpoint,
+            IMapper mapper, StatusInfoViewModel status, IWindowManager windowManager)
         {
             _productEndpoint = productEndpoint;
             _saleEndpoint = saleEndpoint;
             _mapper = mapper;
+            _status = status;
+            _windowManager = windowManager;
             //_configHelper = configHelper;
         }
 
         protected override async void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
-            await LoadProducts();
+
+            try
+            {
+                await LoadProducts();
+            }
+            catch (System.Exception ex)
+            {
+                dynamic settings = new ExpandoObject();
+                settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                settings.ResizeMode = ResizeMode.NoResize;
+                settings.Title = "Erro";
+
+                _status.UpdateMessage("Acesso não autorizado", "Você não tem permissão para interagir com a tela de Vendas.");
+                _windowManager.ShowWindow(_status, null, settings);
+                //throw;
+            }
         }
 
         private async Task LoadProducts()
