@@ -15,7 +15,7 @@ namespace TRMDataManager.Controllers
             return data.GetInventory();
         }
 
-        [HttpPost]
+         [HttpPost]
         public void Post(InventoryModel item)
         {
             var data = new InventoryData();
