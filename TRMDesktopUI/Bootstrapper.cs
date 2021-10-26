@@ -1,12 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using Caliburn.Micro;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
-using AutoMapper;
-using Caliburn.Micro;
 using TRMDesktopUI.Helpers;
 using TRMDesktopUI.Library.API;
 using TRMDesktopUI.Library.Helpers;
@@ -34,7 +34,8 @@ namespace TRMDesktopUI
 
             _container.Instance(_container)
                 .PerRequest<IProductEndpoint, ProductEndpoint>()
-                .PerRequest<ISaleEndpoint, SaleEndpoint>();
+                .PerRequest<ISaleEndpoint, SaleEndpoint>()
+                .PerRequest<IUserEndpoint, UserEndpoint>();
 
             _container
                 .Singleton<IWindowManager, WindowManager>()

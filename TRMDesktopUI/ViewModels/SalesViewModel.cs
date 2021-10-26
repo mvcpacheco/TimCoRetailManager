@@ -46,7 +46,7 @@ namespace TRMDesktopUI.ViewModels
             {
                 await LoadProducts();
             }
-            catch (System.Exception ex)
+            catch
             {
                 dynamic settings = new ExpandoObject();
                 settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;

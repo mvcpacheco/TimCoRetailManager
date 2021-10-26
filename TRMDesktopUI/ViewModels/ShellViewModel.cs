@@ -24,6 +24,11 @@ namespace TRMDesktopUI.ViewModels
             ActivateItem(IoC.Get<LoginViewModel>());
         }
 
+        public void UserManagement()
+        {
+            ActivateItem(IoC.Get<UserDisplayViewModel>());
+        }
+
         public void Handle(LogOnEvent message)
         {
             ActivateItem(_salesVM);

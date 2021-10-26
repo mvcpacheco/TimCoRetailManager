@@ -10,6 +10,9 @@
             <MenuItem Header="_Arquivo">
                 <MenuItem x:Name="ExitApplication" Header="_Sair" />
             </MenuItem>
+            <MenuItem Header="_Usuários">
+                <MenuItem x:Name="UserManagement" Header="A_dministração de Usuários" />
+            </MenuItem>
             <MenuItem Header="_Conta" Visibility="{Binding IsLoggedIn,
                         Converter={StaticResource BooleanToVisibilityConverter},
                         FallbackValue=Collapsed}" >
