@@ -33,18 +33,32 @@
                    Margin="0 0 0 20" />
 
         <!-- Coluna 0 -->
-        <TextBlock Text="Usuários" Grid.Column="0" Grid.Row="1" />
-        <ListBox x:Name="Users" Grid.Column="0" Grid.Row="2"
-                  MinHeight="200" MinWidth="150"
-                 SelectedItem="{Binding Email}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Email}" />
-                        <TextBlock Text="{Binding DisplayRoles}" FontSize="18" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
+        <TextBlock Text="Usuários"  Grid.Column="0" Grid.Row="1"/>
+        <ListBox x:Name="Users" MinHeight="200" MinWidth="150" Grid.Column="0" Grid.Row="2">
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Email}" />
+                    <TextBlock Text="{Binding DisplayRoles}" FontSize="18" />
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
         </ListBox>
+
+        <!-- Coluna 1 -->
+        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="20 0 0 0">
+            <TextBlock x:Name="SelectedUserName" Margin="0 0 0 10"/>
+            <TextBlock Text="Grupos atuais" />
+            <StackPanel Orientation="Vertical" Margin="0 0 0 10">
+                <ListBox x:Name="UserRoles" SelectedValue="SelectedRoleToRemove" >
+                </ListBox>
+                <Button x:Name="RemoveSelectedRole" Content="Remover" Margin="0 5 0 5" Padding="5" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <ComboBox x:Name="AvailableRoles" SelectedValue="SelectedRoleToAdd"/>
+                <Button x:Name="AddSelectedRole" Content="Adicionar"  Margin="0 5 0 5" Padding="5" />
+            </StackPanel>
+            
+        </StackPanel>
     </Grid>
 </UserControl>
